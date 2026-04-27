@@ -6,10 +6,7 @@
   <title>Admin Panel - PMC</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg:#0a0a0f; --glass-bg:rgba(20,20,30,0.7); --glass-border:rgba(255,255,255,0.15);
-      --neon-green:#39ff14; --neon-blue:#00f0ff; --text:#eee;
-    }
+    :root { --bg:#0a0a0f; --glass-bg:rgba(20,20,30,0.7); --glass-border:rgba(255,255,255,0.15); --neon-green:#39ff14; --neon-blue:#00f0ff; --text:#eee; }
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
     body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 30% 30%,rgba(0,240,255,0.08),transparent 60%);z-index:-1}
@@ -17,7 +14,7 @@
     #loginScreen{display:flex;justify-content:center;align-items:center;height:100vh}
     .login-box{padding:40px;width:320px;text-align:center}
     .login-box h2{color:var(--neon-blue);font-family:'Orbitron',sans-serif;margin-bottom:20px}
-    .login-box input{width:100%;padding:12px;margin-bottom:15px;background:rgba(0,0,0,0.5);border:1px solid #444;color:white;border-radius:8px;font-size:1rem}
+    .login-box input{width:100%;padding:12px;margin-bottom:15px;background:rgba(0,0,0,0.5);border:1px solid #444;color:white;border-radius:8px}
     .login-box button{width:100%;padding:12px;background:var(--neon-blue);color:black;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
     #adminPanel{max-width:900px;margin:20px auto;padding:20px}
     header{display:flex;justify-content:space-between;align-items:center;padding:15px 25px;margin-bottom:25px}
@@ -57,12 +54,13 @@
         <h2>➕ Add Product</h2>
         <form id="addProductForm">
           <label>Name *</label><input type="text" name="name" required>
-          <label>Category</label><input type="text" name="category" placeholder="e.g. Laptop, Phone, Game, TV" list="catList">
+          <label>Category</label><input type="text" name="category" placeholder="e.g. Laptop, Phone, Game" list="catList">
           <datalist id="catList"><option value="Laptop"><option value="Phone"><option value="Game"><option value="Accessory"><option value="TV"><option value="Other"></datalist>
           <label>Price (₦) *</label><input type="number" name="price" required min="1">
           <label>Description</label><textarea name="description" rows="2"></textarea>
-          <label>Image URL *</label><input type="url" name="image" placeholder="https://example.com/img.jpg" required>
-          <small style="color:#aaa;">Paste direct image link (Imgur etc.)</small>
+          <label>Image URLs * (one per line, first is main)</label>
+          <textarea name="images" rows="4" required placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg"></textarea>
+          <small style="color:#aaa;">Paste direct image links (Imgur etc.)</small>
           <button type="submit" class="add-btn">🚀 Add Product</button>
           <p id="addMsg" style="color:var(--neon-green);"></p>
         </form>
@@ -84,12 +82,9 @@
     if (sessionStorage.getItem(LOGIN_KEY) === 'true') { showPanel(); renderTable(); }
 
     document.getElementById('loginBtn').addEventListener('click', () => {
-      const u = document.getElementById('username').value.trim();
-      const p = document.getElementById('password').value.trim();
-      if (u === 'admin' && p === 'pmc2026') {
+      if (document.getElementById('username').value.trim() === 'admin' && document.getElementById('password').value.trim() === 'pmc2026') {
         sessionStorage.setItem(LOGIN_KEY, 'true');
-        showPanel();
-        renderTable();
+        showPanel(); renderTable();
       } else { document.getElementById('loginMsg').textContent = 'Wrong credentials.'; }
     });
     document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -101,30 +96,41 @@
       document.getElementById('loginScreen').style.display='none';
       document.getElementById('adminPanel').style.display='block';
     }
+
     function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
     function saveProducts(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
     function renderTable() {
       const products = getProducts();
       document.querySelector('#productTable tbody').innerHTML = products.map(p => `
-        <tr><td><img src="${p.image}" width="50" onerror="this.style.display='none'"></td><td>${p.name}</td><td>${p.category||'-'}</td><td>₦${p.price.toLocaleString()}</td>
-        <td><button class="delete-btn" data-id="${p.id}">🗑 Delete</button></td></tr>`).join('');
+        <tr>
+          <td><img src="${p.images?.[0] || ''}" width="50" onerror="this.style.display='none'"></td>
+          <td>${p.name}</td><td>${p.category||'-'}</td><td>₦${p.price.toLocaleString()}</td>
+          <td><button class="delete-btn" data-id="${p.id}">🗑 Delete</button></td>
+        </tr>`).join('');
       document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', (e) => {
         if (!confirm('Delete?')) return;
-        let products = getProducts().filter(p => p.id !== Number(e.target.dataset.id));
-        saveProducts(products); renderTable();
+        let prods = getProducts().filter(p => p.id !== Number(e.target.dataset.id));
+        saveProducts(prods); renderTable();
       }));
     }
+
     document.getElementById('addProductForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const name = e.target.name.value.trim();
       const category = e.target.category.value.trim() || 'Other';
       const price = Number(e.target.price.value);
       const description = e.target.description.value.trim();
-      const image = e.target.image.value.trim();
-      if (!name || !price || !image) { document.getElementById('addMsg').textContent='❌ Fill required fields.'; return; }
-      const newProd = { id:Date.now(), name, category, price, description, image };
+      const imagesRaw = e.target.images.value.trim();
+      if (!name || !price || !imagesRaw) {
+        document.getElementById('addMsg').textContent = '❌ Required fields missing.';
+        return;
+      }
+      const images = imagesRaw.split('\n').map(url => url.trim()).filter(url => url);
+      if (!images.length) { document.getElementById('addMsg').textContent = '❌ At least one image URL required.'; return; }
+      const newProduct = { id: Date.now(), name, category, price, description, images };
       const products = getProducts();
-      products.push(newProd);
+      products.push(newProduct);
       saveProducts(products);
       document.getElementById('addMsg').textContent = `✅ ${name} added!`;
       e.target.reset();
