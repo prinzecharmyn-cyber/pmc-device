@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PMC — Gadgets, Phones & Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== LIQUID GLASS + NEON STYLES ========== */
+    :root {
+      --bg: #0a0a0f;
+      --glass-bg: rgba(20, 20, 30, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --neon-green: #39ff14;
+      --neon-blue: #00f0ff;
+      --text: #eee;
+      --text-dim: #aaa;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top:0; left:0; width:100%; height:100%;
+      background: radial-gradient(circle at 30% 40%, rgba(0,240,255,0.06), transparent 70%),
+                  radial-gradient(circle at 80% 70%, rgba(57,255,20,0.04), transparent 70%);
+      z-index:-1;
+    }
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .container { max-width:1200px; margin:auto; padding:0 20px; }
+    .flex { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+
+    .top-bar { background:rgba(0,0,0,0.8); text-align:center; padding:8px; font-size:0.9rem; color:var(--neon-green); border-bottom:1px solid #333; }
+    .main-header { position:sticky; top:0; z-index:1000; padding:10px 0; }
+    .logo h1 { font-family:'Orbitron',sans-serif; font-size:2rem; line-height:0.9; }
+    .logo .neon-text { color:var(--neon-green); text-shadow:0 0 10px var(--neon-green), 0 0 20px var(--neon-green); }
+    .logo p { font-size:0.75rem; color:var(--text-dim); }
+    .nav-links ul { display:flex; list-style:none; gap:20px; }
+    .nav-links a { color:var(--text); text-decoration:none; position:relative; }
+    .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0%; height:2px; background:var(--neon-blue); box-shadow:0 0 10px var(--neon-blue); transition:width 0.3s; }
+    .nav-links a:hover::after { width:100%; }
+    .header-actions { gap:15px; }
+    .search-box { display:flex; align-items:center; border-radius:30px; padding:5px 15px; background:rgba(255,255,255,0.08); }
+    .search-box input { background:transparent; border:none; color:white; outline:none; width:140px; font-size:0.9rem; }
+    .search-box button { background:none; border:none; color:var(--neon-blue); font-size:1rem; }
+    .cart-icon { font-size:1.5rem; cursor:pointer; position:relative; }
+    .cart-count { position:absolute; top:-10px; right:-14px; background:var(--neon-green); color:black; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:bold; }
+    .hamburger { display:none; font-size:1.8rem; cursor:pointer; }
+
+    .hero { display:flex; align-items:center; justify-content:center; padding:80px 20px; position:relative; overflow:hidden; }
+    .hero-content { text-align:center; z-index:2; }
+    .glitch { font-family:'Orbitron',sans-serif; font-size:3rem; color:white; text-shadow:0 0 15px var(--neon-blue); position:relative; }
+    .glitch::before,.glitch::after { content:attr(data-text); position:absolute; left:0; top:0; width:100%; height:100%; opacity:0.8; }
+    .glitch::before { animation:glitch 0.3s infinite; color:#0ff; z-index:-1; }
+    .glitch::after { animation:glitch 0.3s infinite reverse; color:#f0f; z-index:-2; }
+    .hero p { font-size:1.2rem; margin:20px 0; color:var(--text-dim); }
+    .neon-btn { background:transparent; border:2px solid var(--neon-blue); color:var(--neon-blue); padding:12px 30px; border-radius:30px; font-weight:bold; cursor:pointer; transition:0.3s; text-shadow:0 0 5px var(--neon-blue); box-shadow:0 0 15px rgba(0,240,255,0.3); display:inline-block; text-decoration:none; }
+    .neon-btn:hover { background:var(--neon-blue); color:black; box-shadow:0 0 25px var(--neon-blue); }
+
+    .features-strip { padding:15px 0; border-top:1px solid var(--glass-border); border-bottom:1px solid var(--glass-border); }
+    .features-strip .flex { justify-content:space-around; flex-wrap:wrap; gap:15px; }
+    .feature { color:var(--neon-green); font-weight:600; }
+
+    .section-title { text-align:center; margin:50px 0 30px; font-size:2rem; color:var(--neon-blue); text-shadow:0 0 10px rgba(0,240,255,0.5); }
+    .location-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:25px; }
+    .location-card { padding:25px; border-radius:20px; transition:transform 0.3s, box-shadow 0.3s; }
+    .location-card:hover { transform:translateY(-5px); box-shadow:0 0 25px rgba(0,240,255,0.3); }
+    .location-card h3 { color:var(--neon-green); margin-bottom:10px; }
+    .hours { color:var(--neon-blue); margin-top:10px; font-size:0.9rem; }
+
+    .product-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:25px; padding-bottom:60px; }
+    .product-card { background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); border:1px solid var(--glass-border); border-radius:20px; overflow:hidden; transition:0.3s; display:flex; flex-direction:column; }
+    .product-card:hover { box-shadow:0 0 25px rgba(0,240,255,0.3); transform:translateY(-4px); }
+    .product-card img { width:100%; height:200px; object-fit:contain; background:rgba(0,0,0,0.3); padding:15px; }
+    .product-info { padding:15px; flex:1; }
+    .price { color:var(--neon-green); font-weight:bold; margin:5px 0; }
+    .add-to-cart-btn { background:var(--neon-blue); color:black; border:none; padding:10px; border-radius:25px; font-weight:bold; cursor:pointer; width:100%; transition:0.3s; }
+    .add-to-cart-btn:hover { box-shadow:0 0 20px var(--neon-blue); }
+
+    footer { border-top:2px solid var(--neon-blue); margin-top:40px; padding:40px 0 20px; }
+    .footer-content { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:30px; }
+    .footer-col ul { list-style:none; padding:0; }
+    .footer-col li { margin-bottom:6px; }
+    .footer-bottom { text-align:center; margin-top:30px; color:#777; }
+
+    .cart-sidebar { position:fixed; right:-400px; top:0; width:340px; height:100vh; z-index:1001; transition:right 0.4s; display:flex; flex-direction:column; border-left:2px solid var(--neon-blue); }
+    .cart-sidebar.active { right:0; }
+    .cart-header { display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid #333; }
+    .close-cart { background:none; border:none; color:white; font-size:2rem; cursor:pointer; }
+    .cart-items { flex:1; overflow-y:auto; padding:20px; }
+    .cart-footer { padding:20px; border-top:1px solid #333; }
+    .total { font-size:1.2rem; margin-bottom:15px; color:var(--neon-green); }
+    .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; }
+    .overlay.active { display:block; }
+
+    @keyframes glitch {
+      0%{transform:translate(0)} 20%{transform:translate(-2px,2px)} 40%{transform:translate(-2px,-2px)} 60%{transform:translate(2px,2px)} 80%{transform:translate(2px,-2px)} 100%{transform:translate(0)}
+    }
+    @media (max-width:768px) {
+      .hamburger { display:block; }
+      .nav-links { display:none; position:absolute; top:100%; left:0; width:100%; background:rgba(10,10,20,0.95); backdrop-filter:blur(20px); padding:20px; }
+      .nav-links.active { display:block; }
+      .nav-links ul { flex-direction:column; gap:15px; }
+      .hero-content h2 { font-size:2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar"><p>📞 Call/WhatsApp: <strong>08038919878</strong></p></div>
+
+  <header class="main-header glass">
+    <div class="container flex">
+      <div class="logo">
+        <h1><span class="neon-text">PMC</span></h1>
+        <p>Computer • Phones • Games</p>
+      </div>
+      <nav class="nav-links" id="navLinks">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#shop">Shop</a></li>
+          <li><a href="#locations">Locations</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <div class="search-box glass">
+          <input type="text" placeholder="Search..." id="searchInput">
+          <button id="searchBtn">🔍</button>
+        </div>
+        <div class="cart-icon" id="cartIcon">🛒 <span class="cart-count" id="cartCount">0</span></div>
+        <div class="hamburger" id="hamburger">&#9776;</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h2 class="glitch" data-text="NEXT-GEN GADGETS">NEXT-GEN GADGETS</h2>
+        <p>Laptops, phones, games, accessories &mdash; everything electronic. Three stores in Benin City.</p>
+        <a href="#shop" class="btn neon-btn">🛒 Explore Products</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="features-strip glass">
+    <div class="container flex">
+      <div class="feature"><span>⚡</span> Fast Service</div>
+      <div class="feature"><span>🛡️</span> Warranty</div>
+      <div class="feature"><span>🚚</span> Delivery</div>
+      <div class="feature"><span>💳</span> Flexible Payment</div>
+    </div>
+  </div>
+
+  <section id="locations" class="locations">
+    <div class="container">
+      <h2 class="section-title">📍 Our Stores in Benin City</h2>
+      <div class="location-grid">
+        <div class="location-card glass"><h3>Ugbor Central</h3><p>Shop 22,23,24 Twin Plaza, opp. Ogunmwenyi Rd, before Victorious Mega Kitchen, after Sazy Filling Station.</p><p class="hours">🕒 Mon-Sat: 7:30AM – 8:00PM</p></div>
+        <div class="location-card glass"><h3>Mission Road</h3><p>77 Mission Road, near James Watt Junction. From Ring Road, after John Holt Building.</p><p class="hours">🕒 Mon-Sat: 7:00AM – 7:30PM</p></div>
+        <div class="location-card glass"><h3>Pipeline Junction Eyean</h3><p>78 Benin Auchi Road, Pipeline Junction Eyean, Benin City.</p><p class="hours">🕒 Mon-Sat: 7:30AM – 8:00PM</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="shop" class="featured-products">
+    <div class="container">
+      <h2 class="section-title">🔥 Hot Deals</h2>
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <footer class="glass">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col"><h3>PMC</h3><p>Your trusted gadget hub in Benin City.</p></div>
+        <div class="footer-col"><h3>Links</h3><ul><li><a href="#">Home</a></li><li><a href="#">Shop</a></li></ul></div>
+        <div class="footer-col"><h3>Contact</h3><p>📞 08038919878</p><p>📧 coming soon</p></div>
+      </div>
+      <div class="footer-bottom"><p>© 2026 PMC Computer Phones and Games</p></div>
+    </div>
+  </footer>
+
+  <div class="cart-sidebar glass" id="cartSidebar">
+    <div class="cart-header"><h2>Your Cart</h2><button class="close-cart" id="closeCart">&times;</button></div>
+    <div class="cart-items" id="cartItems"><p class="empty-cart">No items yet.</p></div>
+    <div class="cart-footer">
+      <div class="total">Total: ₦<span id="cartTotal">0</span></div>
+      <button class="btn neon-btn" id="checkoutBtn">💬 Checkout via WhatsApp</button>
+    </div>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <script>
+    // ========== MAIN SHOP LOGIC ==========
+    let products = [];
+    function loadProducts() {
+      const stored = localStorage.getItem('pmcProducts');
+      products = stored ? JSON.parse(stored) : [];
+      renderProducts();
+    }
+    let cart = JSON.parse(localStorage.getItem('pmcCart')) || [];
+    function saveCart() { localStorage.setItem('pmcCart', JSON.stringify(cart)); }
+
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      const existing = cart.find(i => i.id === productId);
+      if (existing) existing.quantity++; else cart.push({...product, quantity:1});
+      saveCart(); updateCartUI(); showAddedToast();
+    }
+    function removeFromCart(productId) { cart = cart.filter(i => i.id !== productId); saveCart(); updateCartUI(); renderCartItems(); }
+    function updateQuantity(productId, newQuantity) {
+      const item = cart.find(i => i.id === productId);
+      if (item) { item.quantity = Math.max(1, newQuantity); saveCart(); updateCartUI(); renderCartItems(); }
+    }
+    function getCartTotal() { return cart.reduce((sum, i) => sum + i.price * i.quantity, 0); }
+    function updateCartUI() {
+      document.getElementById('cartCount').textContent = cart.reduce((s,i) => s + i.quantity, 0);
+      document.getElementById('cartTotal').textContent = getCartTotal().toLocaleString();
+    }
+    function showAddedToast() {
+      const t = document.createElement('div'); t.className='toast'; t.textContent='✔ Added!'; document.body.appendChild(t);
+      setTimeout(() => t.remove(), 1500);
+    }
+    function renderProducts(filtered = null) {
+      const grid = document.getElementById('productGrid');
+      if (!grid) return;
+      const list = filtered || products;
+      grid.innerHTML = list.map(p => `
+        <div class="product-card">
+          <img src="${p.image}" alt="${p.name}" onerror="this.style.display='none'">
+          <div class="product-info">
+            <h3>${p.name}</h3>
+            <p style="font-size:0.8rem;color:#aaa;">${p.description || ''}</p>
+            <p class="price">₦${p.price.toLocaleString()}</p>
+            <button class="add-to-cart-btn" onclick="addToCart(${p.id})">➕ Add to Cart</button>
+          </div>
+        </div>`).join('');
+    }
+    const cartSidebar = document.getElementById('cartSidebar');
+    const overlay = document.getElementById('overlay');
+    document.getElementById('cartIcon').addEventListener('click', () => { cartSidebar.classList.add('active'); overlay.classList.add('active'); renderCartItems(); });
+    document.getElementById('closeCart').addEventListener('click', () => { cartSidebar.classList.remove('active'); overlay.classList.remove('active'); });
+    overlay.addEventListener('click', () => { cartSidebar.classList.remove('active'); overlay.classList.remove('active'); });
+    function renderCartItems() {
+      const container = document.getElementById('cartItems');
+      if (cart.length === 0) { container.innerHTML = '<p class="empty-cart">No items.</p>'; return; }
+      container.innerHTML = cart.map(item => `
+        <div style="display:flex;gap:10px;margin-bottom:15px;border-bottom:1px solid #333;padding-bottom:15px;">
+          <img src="${item.image}" style="width:50px;height:50px;object-fit:contain;background:#000;">
+          <div style="flex:1;">
+            <h4>${item.name}</h4><p style="color:var(--neon-green);">₦${item.price.toLocaleString()}</p>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button onclick="updateQuantity(${item.id}, ${item.quantity-1})" style="background:#333;color:white;border:none;width:25px;">-</button>
+              <span>${item.quantity}</span>
+              <button onclick="updateQuantity(${item.id}, ${item.quantity+1})" style="background:#333;color:white;border:none;width:25px;">+</button>
+              <button onclick="removeFromCart(${item.id})" style="margin-left:auto;background:#f44;color:white;border:none;border-radius:50%;width:25px;">🗑</button>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      if (cart.length === 0) { alert('Cart empty!'); return; }
+      let msg = `📱 *New Order from PMC Website*%0A%0A`;
+      cart.forEach((item,i) => msg += `${i+1}. ${item.name} - ₦${item.price.toLocaleString()} x ${item.quantity}%0A`);
+      msg += `%0A🧾 *Total: ₦${getCartTotal().toLocaleString()}*%0A%0A👤 Name:%0A📍 Preferred Store:%0A`;
+      window.open(`https://wa.me/2348038919878?text=${msg}`, '_blank');
+    });
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!q) { renderProducts(); return; }
+      const filtered = products.filter(p => p.name.toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q));
+      renderProducts(filtered);
+      document.getElementById('productGrid')?.scrollIntoView({behavior:'smooth'});
+    });
+    document.getElementById('hamburger').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('active'));
+    // Init
+    loadProducts();
+    updateCartUI();
+  </script>
+</body>
+</html>
