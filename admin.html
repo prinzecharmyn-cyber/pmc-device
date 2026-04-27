@@ -6,30 +6,29 @@
   <title>Admin Panel - PMC</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#0a0a0f; --glass-bg:rgba(20,20,30,0.7); --glass-border:rgba(255,255,255,0.15); --neon-green:#39ff14; --neon-blue:#00f0ff; --text:#eee; }
+    :root { --bg:#f0f5fc; --glass-bg:rgba(255,255,255,0.65); --glass-border:rgba(255,255,255,0.7); --accent:#2a6fdb; --text-dark:#0b1e33; }
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-    body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 30% 30%,rgba(0,240,255,0.08),transparent 60%);z-index:-1}
-    .glass{background:var(--glass-bg);backdrop-filter:blur(15px);border:1px solid var(--glass-border);border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
-    #loginScreen{display:flex;justify-content:center;align-items:center;height:100vh}
-    .login-box{padding:40px;width:320px;text-align:center}
-    .login-box h2{color:var(--neon-blue);font-family:'Orbitron',sans-serif;margin-bottom:20px}
-    .login-box input{width:100%;padding:12px;margin-bottom:15px;background:rgba(0,0,0,0.5);border:1px solid #444;color:white;border-radius:8px}
-    .login-box button{width:100%;padding:12px;background:var(--neon-blue);color:black;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
-    #adminPanel{max-width:900px;margin:20px auto;padding:20px}
-    header{display:flex;justify-content:space-between;align-items:center;padding:15px 25px;margin-bottom:25px}
-    header h1{font-family:'Orbitron',sans-serif;color:var(--neon-green);font-size:1.5rem}
+    body{font-family:'Inter',sans-serif;background:linear-gradient(to bottom, #1b3b6f 0%, #4a7fb5 20%, #c0daf5 40%, #ffffff 50%, #c0daf5 60%, #4a7fb5 80%, #1b3b6f 100%);color:var(--text-dark);min-height:100vh;display:flex;align-items:center;justify-content:center;}
+    .glass{background:var(--glass-bg);backdrop-filter:blur(15px);border:1px solid var(--glass-border);border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+    #loginScreen{display:flex;justify-content:center;align-items:center;width:100%;}
+    .login-box{padding:40px;width:350px;text-align:center}
+    .login-box h2{color:var(--accent);font-family:'Orbitron',sans-serif;margin-bottom:20px}
+    .login-box input{width:100%;padding:12px;margin-bottom:15px;background:rgba(255,255,255,0.8);border:1px solid #ccc;color:#000;border-radius:8px;font-size:1rem;}
+    .login-box button{width:100%;padding:12px;background:var(--accent);color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+    #adminPanel{max-width:900px;margin:20px auto;padding:20px;display:none;width:100%;}
+    header{display:flex;justify-content:space-between;align-items:center;padding:15px 25px;margin-bottom:25px;background:rgba(255,255,255,0.7);border-radius:20px;}
+    header h1{font-family:'Orbitron',sans-serif;color:var(--accent);font-size:1.5rem}
     #logoutBtn{background:transparent;border:1px solid #ff4444;color:#ff4444;padding:8px 20px;border-radius:20px;cursor:pointer}
-    .add-product{padding:25px;margin-bottom:30px}
-    .add-product h2{color:var(--neon-blue);margin-bottom:20px}
+    .add-product{padding:25px;margin-bottom:30px;background:rgba(255,255,255,0.65);backdrop-filter:blur(15px);border-radius:20px;border:1px solid rgba(255,255,255,0.7);}
+    .add-product h2{color:var(--accent);margin-bottom:20px}
     .add-product label{display:block;margin:10px 0 5px;font-size:0.9rem}
-    .add-product input,.add-product textarea{width:100%;padding:10px;background:rgba(0,0,0,0.4);border:1px solid #444;color:white;border-radius:8px;margin-bottom:10px}
-    .add-btn{background:var(--neon-green);color:black;border:none;padding:12px 25px;border-radius:30px;font-weight:bold;cursor:pointer;margin-top:10px}
-    .product-list{padding:25px;overflow-x:auto}
-    .product-list h2{color:var(--neon-blue);margin-bottom:20px}
+    .add-product input,.add-product textarea{width:100%;padding:10px;background:rgba(255,255,255,0.9);border:1px solid #ccc;color:#000;border-radius:8px;margin-bottom:10px}
+    .add-btn{background:var(--accent);color:white;border:none;padding:12px 25px;border-radius:30px;font-weight:bold;cursor:pointer;margin-top:10px}
+    .product-list{padding:25px;background:rgba(255,255,255,0.65);backdrop-filter:blur(15px);border-radius:20px;border:1px solid rgba(255,255,255,0.7);margin-top:20px;}
+    .product-list h2{color:var(--accent);margin-bottom:20px}
     table{width:100%;border-collapse:collapse}
-    th{text-align:left;padding:10px;background:rgba(0,0,0,0.3);color:var(--neon-blue)}
-    td{padding:10px;border-bottom:1px solid #333}
+    th{text-align:left;padding:10px;background:rgba(0,0,0,0.05);color:var(--text-dark)}
+    td{padding:10px;border-bottom:1px solid #ccc}
     .delete-btn{background:#ff4444;border:none;color:white;padding:6px 12px;border-radius:20px;cursor:pointer}
   </style>
 </head>
@@ -37,20 +36,20 @@
   <div id="loginScreen">
     <div class="login-box glass">
       <h2>🔐 Admin Login</h2>
-      <input type="text" id="username" placeholder="Username" value="admin">
+      <input type="email" id="email" placeholder="Email" value="admin@pmc.com">
       <input type="password" id="password" placeholder="Password" value="pmc2026">
       <button id="loginBtn">Login</button>
-      <p id="loginMsg" style="color:#f44;"></p>
+      <p id="loginMsg" style="color:red;"></p>
     </div>
   </div>
 
-  <div id="adminPanel" style="display:none;">
+  <div id="adminPanel">
     <header class="glass">
       <h1>🛠️ PMC Admin Dashboard</h1>
       <button id="logoutBtn">Logout</button>
     </header>
     <main>
-      <section class="add-product glass">
+      <section class="add-product">
         <h2>➕ Add Product</h2>
         <form id="addProductForm">
           <label>Name *</label><input type="text" name="name" required>
@@ -60,13 +59,13 @@
           <label>Description</label><textarea name="description" rows="2"></textarea>
           <label>Image URLs * (one per line, first is main)</label>
           <textarea name="images" rows="4" required placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg"></textarea>
-          <small style="color:#aaa;">Paste direct image links (Imgur etc.)</small>
+          <small style="color:#555;">Paste direct image links (Imgur etc.)</small>
           <button type="submit" class="add-btn">🚀 Add Product</button>
-          <p id="addMsg" style="color:var(--neon-green);"></p>
+          <p id="addMsg" style="color:green;"></p>
         </form>
       </section>
 
-      <section class="product-list glass">
+      <section class="product-list">
         <h2>📦 Inventory</h2>
         <table id="productTable">
           <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Action</th></tr></thead>
@@ -79,19 +78,28 @@
   <script>
     const STORAGE_KEY = 'pmcProducts';
     const LOGIN_KEY = 'pmcAdminLoggedIn';
+    const VALID_EMAIL = 'admin@pmc.com';
+    const VALID_PASS = 'pmc2026';
+
     if (sessionStorage.getItem(LOGIN_KEY) === 'true') { showPanel(); renderTable(); }
 
     document.getElementById('loginBtn').addEventListener('click', () => {
-      if (document.getElementById('username').value.trim() === 'admin' && document.getElementById('password').value.trim() === 'pmc2026') {
+      const email = document.getElementById('email').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      if (email === VALID_EMAIL && pass === VALID_PASS) {
         sessionStorage.setItem(LOGIN_KEY, 'true');
         showPanel(); renderTable();
-      } else { document.getElementById('loginMsg').textContent = 'Wrong credentials.'; }
+      } else {
+        document.getElementById('loginMsg').textContent = 'Invalid email or password.';
+      }
     });
+
     document.getElementById('logoutBtn').addEventListener('click', () => {
       sessionStorage.removeItem(LOGIN_KEY);
       document.getElementById('adminPanel').style.display='none';
       document.getElementById('loginScreen').style.display='flex';
     });
+
     function showPanel() {
       document.getElementById('loginScreen').style.display='none';
       document.getElementById('adminPanel').style.display='block';
@@ -123,11 +131,11 @@
       const description = e.target.description.value.trim();
       const imagesRaw = e.target.images.value.trim();
       if (!name || !price || !imagesRaw) {
-        document.getElementById('addMsg').textContent = '❌ Required fields missing.';
+        document.getElementById('addMsg').textContent = '❌ Name, price, and at least one image required.';
         return;
       }
-      const images = imagesRaw.split('\n').map(url => url.trim()).filter(url => url);
-      if (!images.length) { document.getElementById('addMsg').textContent = '❌ At least one image URL required.'; return; }
+      const images = imagesRaw.split('\n').map(u => u.trim()).filter(u => u);
+      if (!images.length) { document.getElementById('addMsg').textContent = '❌ No valid image URLs.'; return; }
       const newProduct = { id: Date.now(), name, category, price, description, images };
       const products = getProducts();
       products.push(newProduct);
