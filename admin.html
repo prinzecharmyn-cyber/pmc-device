@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - PMC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0a0a0f; --glass-bg:rgba(20,20,30,0.7); --glass-border:rgba(255,255,255,0.15);
+      --neon-green:#39ff14; --neon-blue:#00f0ff; --text:#eee;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    body::before{content:"";position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 30% 30%,rgba(0,240,255,0.08),transparent 60%);z-index:-1}
+    .glass{background:var(--glass-bg);backdrop-filter:blur(15px);border:1px solid var(--glass-border);border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+    #loginScreen{display:flex;justify-content:center;align-items:center;height:100vh}
+    .login-box{padding:40px;width:320px;text-align:center}
+    .login-box h2{color:var(--neon-blue);font-family:'Orbitron',sans-serif;margin-bottom:20px}
+    .login-box input{width:100%;padding:12px;margin-bottom:15px;background:rgba(0,0,0,0.5);border:1px solid #444;color:white;border-radius:8px;font-size:1rem}
+    .login-box button{width:100%;padding:12px;background:var(--neon-blue);color:black;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+    #adminPanel{max-width:900px;margin:20px auto;padding:20px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:15px 25px;margin-bottom:25px}
+    header h1{font-family:'Orbitron',sans-serif;color:var(--neon-green);font-size:1.5rem}
+    #logoutBtn{background:transparent;border:1px solid #ff4444;color:#ff4444;padding:8px 20px;border-radius:20px;cursor:pointer}
+    .add-product{padding:25px;margin-bottom:30px}
+    .add-product h2{color:var(--neon-blue);margin-bottom:20px}
+    .add-product label{display:block;margin:10px 0 5px;font-size:0.9rem}
+    .add-product input,.add-product textarea{width:100%;padding:10px;background:rgba(0,0,0,0.4);border:1px solid #444;color:white;border-radius:8px;margin-bottom:10px}
+    .add-btn{background:var(--neon-green);color:black;border:none;padding:12px 25px;border-radius:30px;font-weight:bold;cursor:pointer;margin-top:10px}
+    .product-list{padding:25px;overflow-x:auto}
+    .product-list h2{color:var(--neon-blue);margin-bottom:20px}
+    table{width:100%;border-collapse:collapse}
+    th{text-align:left;padding:10px;background:rgba(0,0,0,0.3);color:var(--neon-blue)}
+    td{padding:10px;border-bottom:1px solid #333}
+    .delete-btn{background:#ff4444;border:none;color:white;padding:6px 12px;border-radius:20px;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div id="loginScreen">
+    <div class="login-box glass">
+      <h2>🔐 Admin Login</h2>
+      <input type="text" id="username" placeholder="Username" value="admin">
+      <input type="password" id="password" placeholder="Password" value="pmc2026">
+      <button id="loginBtn">Login</button>
+      <p id="loginMsg" style="color:#f44;"></p>
+    </div>
+  </div>
+
+  <div id="adminPanel" style="display:none;">
+    <header class="glass">
+      <h1>🛠️ PMC Admin Dashboard</h1>
+      <button id="logoutBtn">Logout</button>
+    </header>
+    <main>
+      <section class="add-product glass">
+        <h2>➕ Add Product</h2>
+        <form id="addProductForm">
+          <label>Name *</label><input type="text" name="name" required>
+          <label>Category</label><input type="text" name="category" placeholder="e.g. Laptop, Phone, Game, TV" list="catList">
+          <datalist id="catList"><option value="Laptop"><option value="Phone"><option value="Game"><option value="Accessory"><option value="TV"><option value="Other"></datalist>
+          <label>Price (₦) *</label><input type="number" name="price" required min="1">
+          <label>Description</label><textarea name="description" rows="2"></textarea>
+          <label>Image URL *</label><input type="url" name="image" placeholder="https://example.com/img.jpg" required>
+          <small style="color:#aaa;">Paste direct image link (Imgur etc.)</small>
+          <button type="submit" class="add-btn">🚀 Add Product</button>
+          <p id="addMsg" style="color:var(--neon-green);"></p>
+        </form>
+      </section>
+
+      <section class="product-list glass">
+        <h2>📦 Inventory</h2>
+        <table id="productTable">
+          <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'pmcProducts';
+    const LOGIN_KEY = 'pmcAdminLoggedIn';
+    if (sessionStorage.getItem(LOGIN_KEY) === 'true') { showPanel(); renderTable(); }
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value.trim();
+      if (u === 'admin' && p === 'pmc2026') {
+        sessionStorage.setItem(LOGIN_KEY, 'true');
+        showPanel();
+        renderTable();
+      } else { document.getElementById('loginMsg').textContent = 'Wrong credentials.'; }
+    });
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem(LOGIN_KEY);
+      document.getElementById('adminPanel').style.display='none';
+      document.getElementById('loginScreen').style.display='flex';
+    });
+    function showPanel() {
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('adminPanel').style.display='block';
+    }
+    function getProducts() { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    function saveProducts(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+    function renderTable() {
+      const products = getProducts();
+      document.querySelector('#productTable tbody').innerHTML = products.map(p => `
+        <tr><td><img src="${p.image}" width="50" onerror="this.style.display='none'"></td><td>${p.name}</td><td>${p.category||'-'}</td><td>₦${p.price.toLocaleString()}</td>
+        <td><button class="delete-btn" data-id="${p.id}">🗑 Delete</button></td></tr>`).join('');
+      document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', (e) => {
+        if (!confirm('Delete?')) return;
+        let products = getProducts().filter(p => p.id !== Number(e.target.dataset.id));
+        saveProducts(products); renderTable();
+      }));
+    }
+    document.getElementById('addProductForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = e.target.name.value.trim();
+      const category = e.target.category.value.trim() || 'Other';
+      const price = Number(e.target.price.value);
+      const description = e.target.description.value.trim();
+      const image = e.target.image.value.trim();
+      if (!name || !price || !image) { document.getElementById('addMsg').textContent='❌ Fill required fields.'; return; }
+      const newProd = { id:Date.now(), name, category, price, description, image };
+      const products = getProducts();
+      products.push(newProd);
+      saveProducts(products);
+      document.getElementById('addMsg').textContent = `✅ ${name} added!`;
+      e.target.reset();
+      renderTable();
+    });
+  </script>
+</body>
+</html>
