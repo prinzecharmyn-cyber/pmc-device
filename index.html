@@ -479,6 +479,9 @@
         existing ? existing.quantity++ : cart.push({...p, quantity:1});
         saveCart(); updateCartUI(); showToast('✔ Added!');
       }
+      // 🔧 EXPOSE addToCart globally so inline onclick works
+      window.addToCart = addToCart;
+
       function removeFromCart(id) { cart = cart.filter(i => i.id !== id); saveCart(); updateCartUI(); renderCartItems(); }
       function updateQuantity(id, qty) {
         const item = cart.find(i => i.id === id);
